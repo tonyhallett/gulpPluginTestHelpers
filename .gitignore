@@ -1,0 +1,8 @@
+node_modules
+pluginTestHelpers.d.ts
+pluginTestHelpers.js
+fileHelpers.js
+fileHelpers.d.ts
+testHelpers.js
+testHelpers.d.ts
+coverage
