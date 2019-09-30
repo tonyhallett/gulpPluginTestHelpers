@@ -1,6 +1,6 @@
 {
   "name": "gulpplugintesthelpers",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Helper functions for testing a gulp plugin",
   "main": "pluginTestHelpers.js",
   "types": "pluginTestHelpers.d.ts",
@@ -31,9 +31,9 @@
   "bugs": "https://github.com/tonyhallett/gulpPluginTestHelpers/issues",
   "license": "ISC",
   "dependencies": {
-    "expect": "^24.9.0",
     "from2-string": "^1.1.0",
     "into-stream": "^5.1.0",
+    "lodash.isequal": "^4.5.0",
     "stream-to-string": "^1.1.0",
     "th-gulphelpers": "^1.0.2"
   },
@@ -54,6 +54,7 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.18",
+    "@types/lodash.isequal": "^4.5.5",
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.3"

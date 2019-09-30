@@ -2,12 +2,8 @@ import * as intoStream from 'into-stream';
 import { PluginError,FileContentsTypeNotSupportedError,File,GulpStream } from "th-gulphelpers";
 import { getFileContents, createStreamOrBufferFile, FileType} from './fileHelpers'
 import { getFileType } from './pluginTestHelpers';
-import * as matchers from 'expect/build/matchers'
+const isEqual =  require('lodash.isequal');
 
-function doesEqual(received:any,expected:any){
-    const result = matchers.default.toEqual(received,expected) as any;
-    return result.pass;
-}
 function throwIf(predicate:()=>boolean){
     if(predicate()){
         throw new Error();
@@ -53,7 +49,7 @@ export function ignoresFileTest(gulpStream:GulpStream,file:File){
     return pluginTest(gulpStream,file,async (files,error)=>{
         throwIf(()=>{
             const transformedFile=files[0];
-            return !!error||files.length!==1||transformedFile!==file||!doesEqual(fileClone,transformedFile);
+            return !!error||files.length!==1||transformedFile!==file||!isEqual(fileClone,transformedFile);
         })
     })
 }
@@ -161,7 +157,7 @@ export function pluginTest(gulpStream:GulpStream,file:File,expectation:(files:Fi
                     fails=true;
                 }else{
                     const transformedFile = files[0];
-                    fails = !doesEqual(nullClone,transformedFile);
+                    fails = !isEqual(nullClone,transformedFile);
                 }
                 return fails?GulpRuleErrorType.DidNotPassThroughNull:GulpRuleErrorType.None;
             }
