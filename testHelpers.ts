@@ -3,6 +3,7 @@ import { PluginError,FileContentsTypeNotSupportedError,File,GulpStream } from "t
 import { getFileContents, createStreamOrBufferFile, FileType} from './fileHelpers'
 import { getFileType } from './pluginTestHelpers';
 const isEqual =  require('lodash.isequal');
+const streamEqual = require('stream-equal');
 
 function throwIf(predicate:()=>boolean){
     if(predicate()){
@@ -44,12 +45,29 @@ export function transformsWithFilesTest(gulpStream:GulpStream,file:File){
 //#region ignores/filters
 
 export function ignoresFileTest(gulpStream:GulpStream,file:File){
+    const isStream=file.isStream();
     //for property values changed / added / deleted
     const fileClone=file.clone();
     return pluginTest(gulpStream,file,async (files,error)=>{
         throwIf(()=>{
             const transformedFile=files[0];
-            return !!error||files.length!==1||transformedFile!==file||!isEqual(fileClone,transformedFile);
+            let throws = !!error||files.length!==1||transformedFile!==file;
+            if(!throws){
+                if(isStream){
+                    const originalStream=fileClone.contents as NodeJS.ReadStream;
+                    const transformedStream=transformedFile.contents as NodeJS.ReadStream;
+                    delete fileClone._contents;
+                    delete transformedFile._contents;
+                    if(isEqual(fileClone,transformedFile)){
+                        throws = !streamEqual(originalStream,transformedStream);
+                    }else{
+                        throws = true;
+                    }
+                }else{
+                    throws = !isEqual(fileClone,transformedFile);
+                }
+            }
+            return throws;
         })
     })
 }

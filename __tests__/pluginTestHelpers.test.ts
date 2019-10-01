@@ -344,11 +344,13 @@ describe('plugin helper',()=>{
     })
     describe('filters / ignores',()=>{
         describe('ignoresFile',()=>{
-            it('should pass ignoresFile when a file is ignored', ()=>{
-                fileTransformer=f=>[f];
-                const gt=createBothSupportedTransform();
-                return PluginHelpers.ignoresFileTest(gt,PluginHelpers.createBufferFile("Some text"));
-            })
+            [true,false].forEach((isStream)=>{
+                it('should pass ignoresFile when a file is ignored', ()=>{
+                    fileTransformer=f=>[f];
+                    const gt=createBothSupportedTransform();
+                    return PluginHelpers.ignoresFileTest(gt,PluginHelpers.createStreamOrBufferFile("Some text",isStream));
+                })
+            });
             describe("failing ignoresFile tests",()=>{
                 describe('contents change',()=>{
                     it('should fail ignoresFile when contents is a new stream',()=>{
